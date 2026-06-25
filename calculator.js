@@ -101,7 +101,7 @@ function renderOutput(result) {
             <div class="text-muted-custom mt-1">${result.units}</div>
         </div>
 
-        <div class="panel-card p-4">
+        <div class="panel-card detail-card p-4">
             <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                 <div>
                     <div class="eyebrow mb-1">Calculation Detail</div>

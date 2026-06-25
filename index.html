@@ -29,7 +29,8 @@
         }
 
         .app-shell {
-            max-width: 1220px;
+            width: min(100% - 1.5rem, 1360px);
+            max-width: none;
         }
 
         .hero {
@@ -50,15 +51,50 @@
         }
 
         .panel-card {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
             border: 1px solid rgba(228, 231, 236, 0.9);
             border-radius: 24px;
             background: var(--surface);
             box-shadow: 0 18px 50px rgba(15, 23, 42, 0.07);
         }
 
+        .table-responsive {
+            width: 100%;
+        }
+
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .workspace-grid > *,
+        .result-grid > * {
+            min-width: 0;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.95fr) minmax(360px, 1.2fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .detail-card {
+            grid-column: 1 / -1;
+        }
+
+        #output {
+            display: contents;
+        }
+
         .input-card {
             position: sticky;
             top: 1rem;
+            width: 100%;
         }
 
         .form-label {
@@ -161,7 +197,27 @@
             color: var(--muted);
         }
 
+        @media (min-width: 1200px) {
+            .hero {
+                padding: 2.5rem;
+            }
+
+            .metric-card,
+            .panel-card {
+                border-radius: 28px;
+            }
+        }
+
         @media (max-width: 991.98px) {
+            .app-shell {
+                width: min(100% - 1.25rem, 820px);
+            }
+
+            .workspace-grid,
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
             .input-card {
                 position: static;
             }
@@ -171,10 +227,37 @@
                 border-radius: 22px;
             }
         }
+
+        @media (max-width: 575.98px) {
+            .app-shell {
+                width: min(100% - 1rem, 100%);
+            }
+
+            .hero,
+            .panel-card,
+            .metric-card {
+                border-radius: 18px;
+            }
+
+            .hero,
+            .panel-card,
+            .metric-card,
+            .input-card {
+                padding: 1.1rem !important;
+            }
+
+            .layer-bar {
+                align-items: flex-start;
+                flex-direction: column;
+                justify-content: center;
+                gap: 0.15rem;
+                min-height: 56px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container app-shell py-4 py-lg-5">
+    <div class="container-fluid app-shell py-4 py-lg-5">
         <header class="hero mb-4 mb-lg-5">
             <div class="row align-items-end g-3">
                 <div class="col-lg-8">
@@ -188,8 +271,8 @@
             </div>
         </header>
 
-        <div class="row g-4">
-            <div class="col-lg-4">
+        <div class="workspace-grid">
+            <div>
                 <form id="calculatorForm" class="panel-card input-card p-4">
                     <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
                         <div>
@@ -236,10 +319,12 @@
                 </form>
             </div>
 
-            <div class="col-lg-8">
+            <div>
                 <div id="alert"></div>
-                <div id="layerPreview" class="mb-4"></div>
-                <div id="output"></div>
+                <div id="resultGrid" class="result-grid">
+                    <div id="layerPreview"></div>
+                    <div id="output"></div>
+                </div>
             </div>
         </div>
     </div>
