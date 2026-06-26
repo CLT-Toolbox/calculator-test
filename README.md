@@ -48,3 +48,114 @@
     </li>
   </ul>
 </span>
+
+---
+
+## Implementation Notes
+
+This project implements a CLT floor panel calculator based on `floor-panel-properties.xlsx`.
+
+Implemented requirements:
+
+- CLT layer datatype: `CLTLayerType`.
+- CLT layup datatype: `CLTLayupType`.
+- Panel result datatype: `PanelPropertiesType`.
+- Calculation entry point: `PanelProperties.calculate(CLTLayupType)`.
+- Supported analytical methods: Shear Analogy and Gamma.
+- Shear Analogy supports 3 to 9 layers.
+- Gamma supports 3 or 5 layers only.
+- Shear Analogy layup validation checks symmetry from top to bottom.
+- Front view renders input section and output result/detail only.
+- Calculation logic uses data structures and object-oriented JavaScript.
+
+## Project Structure
+
+```text
+.
+|-- index.html
+|-- calculator.js
+|-- floor-panel-properties.xlsx
+|-- assets/
+|   `-- clt-layup.png
+|-- calculation/
+|   `-- panel-properties.js
+`-- type/
+    |-- clt-layer-type.js
+    |-- clt-layer-properties-type.js
+    |-- clt-layup-type.js
+    |-- material-grade-type.js
+    `-- panel-properties-type.js
+```
+
+## How to Run
+
+This project is a static web app. No build step is required.
+
+Run a local server from the project root:
+
+```bash
+python3 -m http.server 8010
+```
+
+Open in browser:
+
+```text
+http://127.0.0.1:8010/index.html
+```
+
+If the page still shows an older layout, hard refresh the browser:
+
+- macOS: `Cmd + Shift + R`
+- Windows/Linux: `Ctrl + Shift + R`
+
+## How to Use
+
+1. Choose analytical method: `Shear Analogy` or `Gamma`.
+2. Choose material grade: `MGP10` or `MGP12`.
+3. Enter total layers, layer thickness, span length, and effective width.
+4. Click `Calculate Panel`.
+5. Review result cards: effective flexural stiffness, CLT layup preview, and calculation detail table.
+
+Validation rules:
+
+- `Shear Analogy` accepts 3 to 9 symmetric layers.
+- `Gamma` accepts 3 or 5 layers only.
+- Thickness, length, and `beff` must be greater than 0.
+
+## Manual Test Checklist
+
+Use these checks before submitting the assignment:
+
+1. Open `http://127.0.0.1:8010/index.html`.
+2. Confirm default input renders without errors.
+3. Confirm default Shear Analogy result appears.
+4. Switch method to `Gamma` and confirm layer count is limited to `3` or `5`.
+5. Switch back to `Shear Analogy` and confirm layer count accepts `3` to `9`.
+6. Try invalid values, such as `0` thickness, and confirm validation message appears.
+7. Check responsive layout on desktop, tablet, and mobile widths.
+8. Open browser DevTools console and confirm there are no JavaScript errors.
+
+## Submission Notes
+
+Current assignment branch:
+
+```text
+assignment-anang
+```
+
+After pushing the branch, create a pull request from:
+
+```text
+assignment-anang
+```
+
+to the original repository target branch requested by the assignment.
+
+The assignment also asks to add these GitHub users as contributors:
+
+```text
+NurAfianto
+ikhsan017
+```
+
+If GitHub does not show them automatically as contributors, add them through the fork repository settings or invite them as collaborators, depending on repository permission.
