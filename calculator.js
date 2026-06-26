@@ -50,31 +50,33 @@ function renderLayerPreview(layup) {
                 <span class="method-badge">${layup.grade.name}</span>
             </div>
 
-            <div class="layer-stack mb-4">
-                ${layers.map((layer) => `
-                    <div class="layer-bar layer-${layer.angle}">
-                        <span>T${layer.index} &middot; ${layer.angle}&deg;</span>
-                        <span>${formatNumber(layer.thickness)} mm</span>
-                    </div>
-                `).join('')}
-            </div>
+            <div class="layup-content">
+                <div class="layer-stack">
+                    ${layers.map((layer) => `
+                        <div class="layer-bar layer-${layer.angle}">
+                            <span>T${layer.index} &middot; ${layer.angle}&deg;</span>
+                            <span>${formatNumber(layer.thickness)} mm</span>
+                        </div>
+                    `).join('')}
+                </div>
 
-            <div class="table-responsive">
-                <table class="table table-sm align-middle mb-0">
-                    <thead><tr><th>Layer</th><th>Thickness</th><th>yi</th><th>Angle</th><th>Ei,XX</th><th>G</th></tr></thead>
-                    <tbody>
-                        ${layers.map((layer) => `
-                            <tr>
-                                <td class="fw-bold">T${layer.index}</td>
-                                <td class="number-cell">${formatNumber(layer.thickness)} mm</td>
-                                <td class="number-cell">${formatNumber(layer.y)} mm</td>
-                                <td><span class="badge text-bg-light border">${layer.angle}&deg;</span></td>
-                                <td class="number-cell">${formatNumber(layer.elasticModulus)} MPa</td>
-                                <td class="number-cell">${formatNumber(layer.shearModulus)} MPa</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead><tr><th>Layer</th><th>Thickness</th><th>yi</th><th>Angle</th><th>Ei,XX</th><th>G</th></tr></thead>
+                        <tbody>
+                            ${layers.map((layer) => `
+                                <tr>
+                                    <td class="fw-bold">T${layer.index}</td>
+                                    <td class="number-cell">${formatNumber(layer.thickness)} mm</td>
+                                    <td class="number-cell">${formatNumber(layer.y)} mm</td>
+                                    <td><span class="badge text-bg-light border">${layer.angle}&deg;</span></td>
+                                    <td class="number-cell">${formatNumber(layer.elasticModulus)} MPa</td>
+                                    <td class="number-cell">${formatNumber(layer.shearModulus)} MPa</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     `;
@@ -89,7 +91,7 @@ function renderOutput(result) {
         : '';
 
     output.innerHTML = `
-        <div class="metric-card p-4 mb-4">
+        <div class="metric-card p-4">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
                 <div>
                     <div class="eyebrow mb-1">Result</div>
