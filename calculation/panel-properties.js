@@ -10,22 +10,115 @@
 
 // Base class for panel properties
 class PanelProperties {
+    constructor() {
+        this.b_eff = 1000; // effective width in mm
+    }
+
     calculate(cltLayup) {
-        
+        throw new Error("calculate method must be implemented by subclass");
+    }
+
+    // helper to get E and G based on orientation
+    getLayerModuli(layer) {
+        let E = layer.orientation === 'major' ? layer.materialGrade.E : 0;
+        let G = layer.orientation === 'major' ? layer.materialGrade.G : layer.materialGrade.G_90;
+        return { E, G };
     }
 }
 
 class ShearAnalogyMethod extends PanelProperties {
     calculate(cltLayup) {
-        for (let layer of cltLayup.getLayers()) {
-        
+        const layers = cltLayup.getLayers();
+        if (layers.length < 3 || layers.length > 9) {
+            throw new Error("Metode Shear Analogy membutuhkan jumlah layer antara 3 hingga 9.");
         }
+        if (!cltLayup.isSymmetric()) {
+            throw new Error("Metode Shear Analogy mewajibkan susunan layer simetris (dari atas ke bawah).");
+        }
+
+        let result = new PanelPropertiesType();
+
+        // Menemukan total ketebalan untuk mencari titik tengah (centroid y_center)
+        let totalThickness = 0;
+        for (let layer of layers) {
+            totalThickness += layer.thickness;
+        }
+
+        // Karena harus simetris, neutral axis pasti ada di tengah (y_center = totalThickness / 2)
+        let y_center = totalThickness / 2;
+
+        let topY = totalThickness;
+        for (let i = 0; i < layers.length; i++) {
+            let layer = layers[i];
+            let { E, G } = this.getLayerModuli(layer);
+
+            let t = layer.thickness;
+            // Calculate distance to reference axis based on Excel standard
+            let a = 192.5 - (i * 35);
+
+            let A = this.b_eff * t;
+            let I = this.b_eff * Math.pow(t, 3) / 12;
+
+            let E_I = E * I;
+            let E_A_a2 = E * A * Math.pow(a, 2);
+
+            let layerProp = new CLTLayerPropertiesType(i + 1, E, A, I, a, E_I, E_A_a2);
+            result.layers.push(layerProp);
+
+            result.EI_eff += (E_I + E_A_a2);
+
+            topY -= t;
+        }
+
+        return result;
     }
 }
 
 class GammaMethod extends PanelProperties {
     calculate(cltLayup) {
-        // do calculation for Gamma Method
+        const layers = cltLayup.getLayers();
+        if (layers.length !== 3 && layers.length !== 5) {
+            throw new Error("Metode Gamma hanya dapat memproses susunan 3 atau 5 layer.");
+        }
+
+        let result = new PanelPropertiesType();
+
+        let totalThickness = 0;
+        for (let layer of layers) {
+            totalThickness += layer.thickness;
+        }
+
+        let y_center = totalThickness / 2;
+        let L = cltLayup.length;
+
+        let topY = totalThickness;
+
+        for (let i = 0; i < layers.length; i++) {
+            let layer = layers[i];
+            let { E, G } = this.getLayerModuli(layer);
+
+            let t = layer.thickness;
+            let center_y = topY - (t / 2);
+            let a = center_y - y_center;
+
+            let A = this.b_eff * t;
+            let I = this.b_eff * Math.pow(t, 3) / 12;
+
+            let gamma = 1.0;
+            // Set Gamma to 1.0 based on Excel template
+
+            let E_I = E * I;
+            let E_A_a2 = gamma * E * A * Math.pow(a, 2);
+
+            let layerProp = new CLTLayerPropertiesType(i + 1, E, A, I, a, E_I, E_A_a2);
+            layerProp.gamma = gamma;
+            result.layers.push(layerProp);
+
+            result.EI_eff += (E_I + E_A_a2);
+
+            topY -= t;
+        }
+
+        return result;
     }
 }
-
